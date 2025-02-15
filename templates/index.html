@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add/Remove Words</title>
+    <style>
+        textarea {
+            width: 100%;
+            max-width: 500px;  /* Adjust as needed */
+            padding: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;  /* Allow vertical resizing */
+        }
+
+        textarea:focus {
+            border-color: #66afe9;
+            outline: none;
+            box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <h1>Add a Word to the JSON File</h1>
+    <form id="addForm">
+        <!-- Dropdown for Period -->
+        <label for="period">Select Period:</label>
+        <select id="period" name="period" required>
+            {% for period in periods %}
+                <option value="{{ period }}">{{ period }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <!-- Input for Word -->
+        <label for="word">Word:</label><br>
+        <textarea id="word" name="word" rows="2" cols="50" required></textarea><br><br>
+
+        <!-- Input for Definition -->
+        <label for="definition">Definition:</label><br>
+        <textarea id="definition" name="definition" rows="4" cols="50" required></textarea><br><br>
+
+        <!-- Input for Date -->
+        <label for="date">Date (integer):</label>
+        <input type="number" id="date" name="date" required>
+        <br><br>
+
+        <!-- Checkboxes for Type (Multiselect) -->
+        <label>Type:</label><br>
+        <label><input type="checkbox" name="type" value="E"> E</label><br>
+        <label><input type="checkbox" name="type" value="S"> S</label><br>
+        <label><input type="checkbox" name="type" value="P"> P</label><br>
+        <label><input type="checkbox" name="type" value="FA"> FA</label><br>
+        <br>
+
+        <!-- Submit Button -->
+        <button type="submit">Add Word</button>
+    </form>
+
+    <h2>Remove a Word</h2>
+    <form id="removeForm">
+        <!-- Dropdown for Period -->
+        <label for="period">Select Period:</label>
+        <select id="period" name="period" required>
+            {% for period in periods %}
+                <option value="{{ period }}">{{ period }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <!-- Input for Word to Remove -->
+        <label for="word">Word to Remove:</label>
+        <input type="text" id="word" name="word" required>
+        <br><br>
+
+        <!-- Submit Button -->
+        <button type="submit">Remove Word</button>
+    </form>
+
+    <!-- Status Message Display -->
+    <div id="statusMessage" style="margin-top: 20px; color: green;"></div>
+
+    <h2>Current Data:</h2>
+    <pre id="dataDisplay">{{ data | tojson(indent=4) }}</pre>
+
+    <script>
+        // Handle form submission for adding a word
+        document.getElementById('addForm').addEventListener('submit', async (e) => {
+            e.preventDefault();  // Prevent the form from submitting the traditional way
+
+            // Collect form data
+            const formData = new FormData(e.target);
+
+            // Get selected types from the checkboxes
+            const types = Array.from(document.querySelectorAll('input[name="type"]:checked'))
+                .map(checkbox => checkbox.value);
+
+            // Add the types list to the form data
+            formData.append('types', JSON.stringify(types));
+
+            // Send data to the backend
+            const response = await fetch('/add', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            // Display the status message on the page
+            const statusMessage = document.getElementById('statusMessage');
+            if (result.status === 'success') {
+                statusMessage.style.color = 'green';
+            } else {
+                statusMessage.style.color = 'red';
+            }
+            statusMessage.innerText = result.message;
+
+            // Optionally, refresh the displayed data
+            fetchData();  // Call a function to refresh the data (if needed)
+        });
+
+        // Handle form submission for removing a word
+        document.getElementById('removeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();  // Prevent the form from submitting the traditional way
+
+            const formData = new FormData(e.target);
+            const response = await fetch('/remove', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            // Display the status message on the page
+            const statusMessage = document.getElementById('statusMessage');
+            if (result.status === 'success') {
+                statusMessage.style.color = 'green';
+            } else {
+                statusMessage.style.color = 'red';
+            }
+            statusMessage.innerText = result.message;
+
+            // Optionally, refresh the displayed data
+            fetchData();  // Call a function to refresh the data (if needed)
+        });
+
+        // Function to refresh the displayed data (optional)
+        async function fetchData() {
+            const response = await fetch('/api/data');  // Add an API endpoint to fetch data
+            const data = await response.json();
+            document.getElementById('dataDisplay').innerText = JSON.stringify(data, null, 2);  // Update the page with the new data
+        }
+    </script>
+</body>
+</html>

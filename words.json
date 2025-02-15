@@ -1,0 +1,42 @@
+{
+    "Period 1": {},
+    "Period 2": {},
+    "Period 3": {},
+    "Period 4": {},
+    "Period 5": {},
+    "Period 6": {
+        "Transcontinental Railroad": [
+            "A railroad system connecting the eastern and western United States, completed in 1869. It facilitated economic growth, westward expansion, and increased trade but displaced Native Americans and exploited immigrant labor.",
+            1869,
+            [
+                "E",
+                "S",
+                "P"
+            ]
+        ],
+        "Pacific Railway Act 1862": [
+            "Legislation that provided federal support for the construction of the Transcontinental Railroad through land grants and loans. It spurred economic development and westward migration but led to corruption and environmental damage.",
+            1862,
+            [
+                "E",
+                "P"
+            ]
+        ],
+        "Union and Central Pacific Railroads": [
+            "The two companies responsible for building the Transcontinental Railroad. They employed thousands of workers, including Irish immigrants and Chinese laborers, under harsh conditions.",
+            1862,
+            [
+                "E",
+                "S"
+            ]
+        ],
+        "Cattle Drives; Cowboys and Vaqueros": [
+            "The movement of cattle from ranches to railheads for shipment, primarily in the late 19th century. Cowboys and vaqueros (Mexican cowhands) played key roles, shaping the culture of the American West.",
+            1895,
+            [
+                "E",
+                "S"
+            ]
+        ]
+    }
+}
